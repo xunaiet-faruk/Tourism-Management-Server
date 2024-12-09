@@ -37,7 +37,32 @@ async function run() {
             res.send(result);
         })
 
-        app.get('')
+        app.get('/AddSpots', async (req, res) => {
+            const userEmail = req.query.email;
+            if (!userEmail) {
+                return res.status(400).send({ message: 'Email is required' });
+            }
+            try {
+                const result = await TourCollectionDB.find({ email: userEmail }).toArray(); // Ensure only the matching email's data is returned
+                if (result.length === 0) {
+                    return res.status(404).send({ message: 'No spots found for this email' });
+                }
+                res.send(result);
+            } catch (error) {
+                console.error(error);
+                res.status(500).send({ message: 'Error fetching data' });
+            }
+        });
+
+
+
+
+
+
+
+
+
+
 
         app.get('/Addspots/:id', async (req, res) => {
             const { id } = req.params;
