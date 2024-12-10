@@ -25,6 +25,7 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
         const TourCollectionDB = client.db("TourmanagementDb").collection("AddSpots")
+        const SpotsCollectionDB = client.db("TourmanagementDb").collection("Spots")
 
         app.post('/AddSpots',async(req,res)=>{
                 const data =req.body;
@@ -53,6 +54,30 @@ async function run() {
                 res.status(500).send({ message: 'Error fetching data' });
             }
         });
+
+        app.get('/Spots',async(req,res)=>{
+            const result =await SpotsCollectionDB.find().toArray();
+            res.send(result);
+        })
+
+        app.get('/Spots/:id', async (req, res) => {
+            const { id } = req.params; 
+            try {
+               
+                const spotDetails = await SpotsCollectionDB.findOne({ _id: new ObjectId(id) });
+
+                if (spotDetails) {
+                    res.send(spotDetails);  
+                } else {
+                    res.status(404).send({ message: "Spot not found" });  
+                }
+            } catch (error) {
+                console.error(error);
+                res.status(500).send({ message: "Error fetching spot details", error });  
+            }
+        });
+
+       
         
         app.put('/AddSpots/:id', async (req, res) => {
             const { id } = req.params;
