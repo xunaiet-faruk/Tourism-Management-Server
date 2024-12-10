@@ -83,6 +83,15 @@ async function run() {
         });
 
 
+        app.delete('/AddSpots/:id', async (req, res) => {
+            const { id } = req.params;
+            try {
+                const result = await TourCollectionDB.deleteOne({ _id: new ObjectId(id) });
+                res.send(result);
+            } catch (error) {
+                res.status(500).send({ error: 'Error deleting the spot' });
+            }
+        });
 
 
 
