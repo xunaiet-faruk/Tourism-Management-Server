@@ -53,6 +53,35 @@ async function run() {
                 res.status(500).send({ message: 'Error fetching data' });
             }
         });
+        
+        app.put('/AddSpots/:id', async (req, res) => {
+            const { id } = req.params;
+            console.log(id);
+            const updatedData = req.body;
+
+            try {
+                const result = await TourCollectionDB.updateOne(
+                    { _id: new ObjectId(id) },
+                    { $set: updatedData }
+                );
+
+                if (result.modifiedCount > 0) {
+                    res.status(200).send({ success: true });
+                } else {
+                    res.status(404).send({
+                        success: false,
+                        message: 'Spot not found or no changes detected.',
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error); 
+                res.status(500).send({
+                    success: false,
+                    error: 'An error occurred while updating the spot.',
+                });
+            }
+        });
+
 
 
 
